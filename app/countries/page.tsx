@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface Country {
   id: string;
@@ -18,25 +19,90 @@ interface Country {
 
 export default function CountriesPage() {
   const [countries, setCountries] = useState<Country[]>([]);
+  const [displayedCountries, setDisplayedCountries] = useState<Country[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const observerTarget = useRef<HTMLDivElement>(null);
+  const ITEMS_PER_PAGE = 6;
 
   useEffect(() => {
     fetchCountries();
   }, []);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loadingMore && !loading) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [hasMore, loadingMore, loading, currentPage, countries.length]);
 
   const fetchCountries = async () => {
     try {
       const response = await fetch('/api/countries');
       const data = await response.json();
       if (data.success) {
-        setCountries(data.data);
+        const fetchedCountries = data.data.map((c: any) => ({
+          id: c._id || c.id,
+          name: c.name,
+          code: c.code,
+          isActive: c.isActive,
+          flag: c.flag,
+          createdAt: c.createdAt,
+          updatedAt: c.updatedAt,
+        }));
+        setCountries(fetchedCountries);
+        // Show first 6
+        setDisplayedCountries(fetchedCountries.slice(0, ITEMS_PER_PAGE));
+        setHasMore(fetchedCountries.length > ITEMS_PER_PAGE);
       }
     } catch (error) {
       console.error('Error fetching countries:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadMore = () => {
+    if (loadingMore || !hasMore) return;
+    
+    setLoadingMore(true);
+    
+    // Simulate loading delay for smooth UX
+    setTimeout(() => {
+      const nextPage = currentPage + 1;
+      const startIndex = currentPage * ITEMS_PER_PAGE;
+      const endIndex = startIndex + ITEMS_PER_PAGE;
+      const moreCountries = countries.slice(startIndex, endIndex);
+      
+      if (moreCountries.length > 0) {
+        setDisplayedCountries((prev) => [...prev, ...moreCountries]);
+        setCurrentPage(nextPage);
+        setHasMore(endIndex < countries.length);
+      } else {
+        setHasMore(false);
+      }
+      
+      setLoadingMore(false);
+    }, 500);
   };
 
   const handleDelete = async (id: string, name: string) => {
@@ -47,9 +113,11 @@ export default function CountriesPage() {
         method: 'DELETE',
       });
       const data = await response.json();
-      
+
       if (data.success) {
-        await fetchCountries();
+        // Remove from both arrays
+        setCountries((prev) => prev.filter((c) => c.id !== id));
+        setDisplayedCountries((prev) => prev.filter((c) => c.id !== id));
       } else {
         alert('Failed to delete country');
       }
@@ -136,7 +204,11 @@ export default function CountriesPage() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h2 className="text-2xl font-bold text-gray-900">All Countries</h2>
-            <p className="text-gray-600 mt-1">Select a country to view detailed information</p>
+            <p className="text-gray-600 mt-1">
+              {countries.length > 0 
+                ? `Showing ${displayedCountries.length} of ${countries.length} countries`
+                : 'Select a country to view detailed information'}
+            </p>
           </div>
           <button
             onClick={() => setShowAddModal(true)}
@@ -146,100 +218,45 @@ export default function CountriesPage() {
           </button>
         </div>
 
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Flag
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Code
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {countries.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
-                    No countries found. Add your first country to get started.
-                  </td>
-                </tr>
-              ) : (
-                countries.map((country) => (
-                  <tr key={country.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {country.flag ? (
-                        <Image
-                          src={country.flag.url}
-                          alt={`${country.name} flag`}
-                          width={48}
-                          height={32}
-                          className="rounded border border-gray-200 object-cover"
-                        />
-                      ) : (
-                        <div className="w-12 h-8 bg-gray-200 rounded border border-gray-300 flex items-center justify-center text-xs text-gray-400">
-                          No flag
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      <a
-                        href={`/countries/${country.id}`}
-                        className="hover:text-blue-600 transition-colors"
-                      >
-                        {country.name}
-                      </a>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {country.code}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          country.isActive
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
-                        }`}
-                      >
-                        {country.isActive ? 'Active' : 'Inactive'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <a
-                        href={`/countries/${country.id}`}
-                        className="text-indigo-600 hover:text-indigo-900 mr-4"
-                      >
-                        View
-                      </a>
-                      <a
-                        href={`/countries/${country.id}/edit`}
-                        className="text-blue-600 hover:text-blue-900 mr-4"
-                      >
-                        Edit
-                      </a>
-                      <button
-                        onClick={() => handleDelete(country.id, country.name)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+        {/* Countries Grid */}
+        {displayedCountries.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {displayedCountries.map((country, index) => (
+                <CountryCard
+                  key={country.id}
+                  country={country}
+                  index={index}
+                  onDelete={handleDelete}
+                />
+              ))}
+            </div>
+
+            {/* Loading More Indicator */}
+            {loadingMore && (
+              <div className="flex justify-center items-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <span className="ml-3 text-gray-600">Loading more...</span>
+              </div>
+            )}
+
+            {/* Infinite Scroll Trigger */}
+            {hasMore && !loadingMore && (
+              <div ref={observerTarget} className="h-20 flex items-center justify-center">
+                <span className="text-gray-400 text-sm">Scroll for more</span>
+              </div>
+            )}
+
+            {/* End of List */}
+            {!hasMore && displayedCountries.length > 0 && (
+              <div className="text-center py-8 text-gray-500">
+                You've reached the end of the list
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       {showAddModal && (
@@ -251,6 +268,102 @@ export default function CountriesPage() {
           }}
         />
       )}
+    </div>
+  );
+}
+
+// Country Card Component with Animation
+function CountryCard({
+  country,
+  index,
+  onDelete,
+}: {
+  country: Country;
+  index: number;
+  onDelete: (id: string, name: string) => void;
+}) {
+  return (
+    <div
+      className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 animate-slide-in-left"
+      style={{
+        animationDelay: `${(index % 6) * 100}ms`,
+        opacity: 0,
+        animation: `slideInLeft 0.5s ease-out ${(index % 6) * 100}ms forwards`,
+      }}
+    >
+      {/* Flag Image */}
+      <div className="relative h-48 bg-gradient-to-br from-blue-50 to-indigo-50">
+        {country.flag ? (
+          <Image
+            src={country.flag.url}
+            alt={`${country.name} flag`}
+            fill
+            className="object-cover"
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <span className="text-6xl opacity-30">🌍</span>
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="p-5">
+        <Link
+          href={`/countries/${country.id}`}
+          className="block hover:text-blue-600 transition-colors"
+        >
+          <h3 className="text-xl font-bold text-gray-900 mb-2">{country.name}</h3>
+        </Link>
+
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-sm font-semibold text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+            {country.code}
+          </span>
+          <span
+            className={`px-3 py-1 text-xs font-semibold rounded-full ${
+              country.isActive
+                ? 'bg-green-100 text-green-800'
+                : 'bg-red-100 text-red-800'
+            }`}
+          >
+            {country.isActive ? '● Active' : '● Inactive'}
+          </span>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-2 pt-3 border-t border-gray-200">
+          <Link
+            href={`/countries/${country.id}`}
+            className="flex-1 text-center px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded transition-colors"
+          >
+            View Details
+          </Link>
+          <Link
+            href={`/countries/${country.id}/edit`}
+            className="flex-1 text-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded transition-colors"
+          >
+            Edit
+          </Link>
+          <button
+            onClick={() => onDelete(country.id, country.name)}
+            className="px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded transition-colors"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Empty State Component
+function EmptyState() {
+  return (
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+      <div className="text-6xl mb-4">🌍</div>
+      <h3 className="text-2xl font-semibold text-gray-700 mb-2">No Countries Yet</h3>
+      <p className="text-gray-500 mb-6">Be the first to add study destinations!</p>
     </div>
   );
 }
