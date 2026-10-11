@@ -69,8 +69,11 @@ export default function CountriesPage() {
           createdAt: c.createdAt,
           updatedAt: c.updatedAt,
         }));
+        
+        // Load ALL countries at once
         setCountries(fetchedCountries);
-        // Show first 6
+        
+        // But only SHOW first 6
         setDisplayedCountries(fetchedCountries.slice(0, ITEMS_PER_PAGE));
         setHasMore(fetchedCountries.length > ITEMS_PER_PAGE);
       }
@@ -86,11 +89,13 @@ export default function CountriesPage() {
     
     setLoadingMore(true);
     
-    // Simulate loading delay for smooth UX
+    // Simulate smooth reveal (no API call, just showing hidden data)
     setTimeout(() => {
       const nextPage = currentPage + 1;
       const startIndex = currentPage * ITEMS_PER_PAGE;
       const endIndex = startIndex + ITEMS_PER_PAGE;
+      
+      // Get next 6 from already loaded countries
       const moreCountries = countries.slice(startIndex, endIndex);
       
       if (moreCountries.length > 0) {
@@ -102,7 +107,7 @@ export default function CountriesPage() {
       }
       
       setLoadingMore(false);
-    }, 500);
+    }, 300); // Smooth reveal delay
   };
 
   const handleDelete = async (id: string, name: string) => {
