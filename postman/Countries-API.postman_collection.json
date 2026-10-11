@@ -1,0 +1,329 @@
+{
+	"info": {
+		"_postman_id": "edu-platform-countries",
+		"name": "Education Platform - Countries API",
+		"description": "Complete CRUD operations for Countries module",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/health",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["api", "health"]
+				},
+				"description": "Check if API and database are healthy"
+			},
+			"response": []
+		},
+		{
+			"name": "1. List All Countries (Empty)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/countries",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["api", "countries"]
+				},
+				"description": "Get all countries - should return empty array initially"
+			},
+			"response": []
+		},
+		{
+			"name": "2. Create Country - Bangladesh",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Bangladesh\",\n  \"code\": \"BD\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/countries",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["api", "countries"]
+				},
+				"description": "Create a new country - Bangladesh"
+			},
+			"response": []
+		},
+		{
+			"name": "3. Create Country - United States",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"United States\",\n  \"code\": \"US\",\n  \"isActive\": true\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/countries",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["api", "countries"]
+				},
+				"description": "Create another country with isActive field"
+			},
+			"response": []
+		},
+		{
+			"name": "4. Create Country - India",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"India\",\n  \"code\": \"IN\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/countries",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["api", "countries"]
+				},
+				"description": "Create India"
+			},
+			"response": []
+		},
+		{
+			"name": "5. List All Countries (With Data)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/countries",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["api", "countries"]
+				},
+				"description": "Get all countries - should show created countries"
+			},
+			"response": []
+		},
+		{
+			"name": "6. Get Single Country by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/countries/{{country_id}}",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["api", "countries", "{{country_id}}"]
+				},
+				"description": "Get a single country by ID - Replace {{country_id}} with actual ID from previous response"
+			},
+			"response": []
+		},
+		{
+			"name": "7. Update Country - Make Inactive",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"isActive\": false\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/countries/{{country_id}}",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["api", "countries", "{{country_id}}"]
+				},
+				"description": "Update country status to inactive"
+			},
+			"response": []
+		},
+		{
+			"name": "8. Update Country - Change Name",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"People's Republic of Bangladesh\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/countries/{{country_id}}",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["api", "countries", "{{country_id}}"]
+				},
+				"description": "Update country name"
+			},
+			"response": []
+		},
+		{
+			"name": "9. Delete Country",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/countries/{{country_id}}",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["api", "countries", "{{country_id}}"]
+				},
+				"description": "Delete a country by ID"
+			},
+			"response": []
+		},
+		{
+			"name": "ERROR: Duplicate Country Code",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Another Bangladesh\",\n  \"code\": \"BD\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/countries",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["api", "countries"]
+				},
+				"description": "Try to create duplicate country code - Should return 409 Conflict"
+			},
+			"response": []
+		},
+		{
+			"name": "ERROR: Invalid Country Code",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Test Country\",\n  \"code\": \"X\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/countries",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["api", "countries"]
+				},
+				"description": "Try to create with invalid code - Should return 400 Bad Request"
+			},
+			"response": []
+		},
+		{
+			"name": "ERROR: Missing Name",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"code\": \"XX\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/countries",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["api", "countries"]
+				},
+				"description": "Try to create without name - Should return 400 Bad Request"
+			},
+			"response": []
+		},
+		{
+			"name": "ERROR: Invalid ID Format",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/countries/invalid-id",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["api", "countries", "invalid-id"]
+				},
+				"description": "Try to get country with invalid ID - Should return 400 Bad Request"
+			},
+			"response": []
+		},
+		{
+			"name": "ERROR: Country Not Found",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/countries/507f1f77bcf86cd799439011",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "3000",
+					"path": ["api", "countries", "507f1f77bcf86cd799439011"]
+				},
+				"description": "Try to get non-existent country - Should return 404 Not Found"
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "country_id",
+			"value": "PASTE_ID_HERE",
+			"type": "string"
+		}
+	]
+}
