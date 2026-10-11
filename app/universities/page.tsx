@@ -238,14 +238,42 @@ export default function UniversitiesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section - Static Content */}
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Discover World-Class Universities
+          </h1>
+          <p className="text-xl text-indigo-100 max-w-3xl mx-auto mb-6">
+            Explore top universities from around the globe. Find the perfect institution that matches 
+            your academic goals, budget, and career aspirations.
+          </p>
+          <div className="flex justify-center gap-4">
+            <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-3">
+              <p className="text-2xl font-bold">{pagination?.total || '0'}</p>
+              <p className="text-sm text-indigo-100">Universities</p>
+            </div>
+            <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-3">
+              <p className="text-2xl font-bold">{countries.length}+</p>
+              <p className="text-sm text-indigo-100">Countries</p>
+            </div>
+            <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-3">
+              <p className="text-2xl font-bold">100%</p>
+              <p className="text-sm text-indigo-100">Free Service</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Universities Management</h1>
+            <h2 className="text-2xl font-bold text-gray-900">Browse Universities</h2>
             {pagination && (
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-gray-600 mt-1">
                 Showing {universities.length} of {pagination.total} universities
               </p>
             )}
@@ -931,9 +959,40 @@ function AddUniversityModal({
 // Loading State Component
 function LoadingState() {
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="h-10 bg-gray-200 rounded w-64 mb-8 animate-pulse"></div>
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section - Static (Always visible) */}
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Discover World-Class Universities
+          </h1>
+          <p className="text-xl text-indigo-100 max-w-3xl mx-auto mb-6">
+            Explore top universities from around the globe. Find the perfect institution that matches 
+            your academic goals, budget, and career aspirations.
+          </p>
+          <div className="flex justify-center gap-4">
+            <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-3">
+              <p className="text-2xl font-bold">...</p>
+              <p className="text-sm text-indigo-100">Universities</p>
+            </div>
+            <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-3">
+              <p className="text-2xl font-bold">...</p>
+              <p className="text-sm text-indigo-100">Countries</p>
+            </div>
+            <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-3">
+              <p className="text-2xl font-bold">100%</p>
+              <p className="text-sm text-indigo-100">Free Service</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Loading Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="mb-8">
+          <div className="h-8 bg-gray-200 rounded w-64 mb-2 animate-pulse"></div>
+          <div className="h-4 bg-gray-200 rounded w-48 animate-pulse"></div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden animate-pulse">

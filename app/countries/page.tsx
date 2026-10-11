@@ -61,17 +61,83 @@ export default function CountriesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-gray-600">Loading...</div>
+      <div className="min-h-screen bg-gray-50">
+        {/* Hero Section - Static (Always visible) */}
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              Explore Study Destinations
+            </h1>
+            <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-6">
+              Discover the perfect country for your higher education journey. Browse through our comprehensive 
+              list of destinations and find detailed information about each location.
+            </p>
+            <div className="flex justify-center gap-4">
+              <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-3">
+                <p className="text-2xl font-bold">50+</p>
+                <p className="text-sm text-blue-100">Countries</p>
+              </div>
+              <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-3">
+                <p className="text-2xl font-bold">1000+</p>
+                <p className="text-sm text-blue-100">Universities</p>
+              </div>
+              <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-3">
+                <p className="text-2xl font-bold">24/7</p>
+                <p className="text-sm text-blue-100">Support</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Loading Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="flex justify-center items-center py-20">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading countries...</p>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section - Static Content */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Explore Study Destinations
+          </h1>
+          <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-6">
+            Discover the perfect country for your higher education journey. Browse through our comprehensive 
+            list of destinations and find detailed information about each location.
+          </p>
+          <div className="flex justify-center gap-4">
+            <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-3">
+              <p className="text-2xl font-bold">50+</p>
+              <p className="text-sm text-blue-100">Countries</p>
+            </div>
+            <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-3">
+              <p className="text-2xl font-bold">1000+</p>
+              <p className="text-sm text-blue-100">Universities</p>
+            </div>
+            <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-3">
+              <p className="text-2xl font-bold">24/7</p>
+              <p className="text-sm text-blue-100">Support</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Countries Management</h1>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">All Countries</h2>
+            <p className="text-gray-600 mt-1">Select a country to view detailed information</p>
+          </div>
           <button
             onClick={() => setShowAddModal(true)}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
