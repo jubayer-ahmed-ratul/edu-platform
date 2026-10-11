@@ -272,28 +272,6 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <p className="text-sm">
-              © 2024 Education Consultancy CRM. All rights reserved.
-            </p>
-            <div className="mt-4 flex justify-center gap-6">
-              <Link href="/countries" className="hover:text-white transition-colors">
-                Countries
-              </Link>
-              <a href="#contact" className="hover:text-white transition-colors">
-                Contact
-              </a>
-              <a href="#about" className="hover:text-white transition-colors">
-                About
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
